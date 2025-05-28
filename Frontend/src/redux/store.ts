@@ -1,12 +1,13 @@
+// C:\Users\vivek_laxvnt1\Desktop\PDF-SnipTool\Frontend\src\redux\store.ts
 import { configureStore } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage'; 
-import authReducer from './slices/authSlice'; // Only one slice
+import storage from 'redux-persist/lib/storage';
+import authReducer from './slices/authSlice';
 
 const persistConfig = {
   key: 'auth',
-  storage, 
-  whitelist: ['token', 'isAuthenticated', 'user'],
+  storage,
+  whitelist: ['isAuthenticated', 'user'],
 };
 
 const persistedAuthReducer = persistReducer(persistConfig, authReducer);

@@ -1,5 +1,5 @@
-import SignUpPage from "../../components/auth/signUp"
-import Navbar from "../../components/layout/navbar"
+import SignUpPage from "../components/signUp"
+import Navbar from "../components/navbar"
 
 const Signup = () => {
   return (

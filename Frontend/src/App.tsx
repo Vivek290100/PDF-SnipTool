@@ -1,10 +1,9 @@
 import { Suspense, lazy } from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
-import UserLayout from "./layout/UserLayout";
+import { Route, Routes } from "react-router-dom";
 
-const Signup = lazy(() => import("./pages/auth/signUp"));
-const Login = lazy(() => import("./pages/auth/login"));
-const Home = lazy(() => import("./pages/user/HomePage"));
+const Signup = lazy(() => import("./pages/signUpPage"));
+const Login = lazy(() => import("./pages/loginPage"));
+const Home = lazy(() => import("./pages/homePage"));
 
 
 const App = () => {
@@ -15,9 +14,6 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/user" element={<UserLayout />} >
-            <Route index element={<Navigate to="userDashboard" replace />} />  
-          </Route>
         </Routes>
       </Suspense>
     </>

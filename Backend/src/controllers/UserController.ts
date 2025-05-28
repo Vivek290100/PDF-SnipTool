@@ -1,5 +1,6 @@
+// C:\Users\vivek_laxvnt1\Desktop\PDF-SnipTool\Backend\src\controllers\UserController.ts
 import { Request, Response } from "express";
-import UserService from "../services/UserService";
+import UserService from "../services/userService";
 
 interface AuthRequest extends Request {
   user?: { userId: string };
@@ -9,8 +10,6 @@ class UserController {
   constructor(private _userService: UserService) {}
 
   async signUpUser(req: Request, res: Response): Promise<void> {
-    console.log("signuppppppppp");
-    
     try {
       const { email, password, userName } = req.body;
       const result = await this._userService.initiateSignUp({
@@ -21,7 +20,7 @@ class UserController {
 
       res.status(200).json({
         success: true,
-        message: "OTP sent to email",
+        message: "User registered successfully",
         email: result.email,
       });
     } catch (error: any) {
@@ -32,15 +31,10 @@ class UserController {
     }
   }
 
-
-
   async loginUser(req: Request, res: Response): Promise<void> {
-    console.log("its login controller");
-    
     try {
       const { email, password } = req.body;
       const { user } = await this._userService.loginUser(email, password);
-
 
       const filteredUser = {
         id: user._id,
@@ -62,7 +56,6 @@ class UserController {
     }
   }
 
-
   async logout(req: AuthRequest, res: Response): Promise<void> {
     try {
       const userId = req.user?.userId;
@@ -71,9 +64,7 @@ class UserController {
 
       await this._userService.logout(userId);
 
-      res
-        .status(200)
-        .json({ success: true, message: "Logged out successfully" });
+      res.status(200).json({ success: true, message: "Logged out successfully" });
     } catch (error: any) {
       res.status(400).json({ success: false, message: error.message });
     }

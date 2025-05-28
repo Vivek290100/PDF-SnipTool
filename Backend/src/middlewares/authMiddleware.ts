@@ -1,24 +1,18 @@
+// C:\Users\vivek_laxvnt1\Desktop\PDF-SnipTool\Backend\src\middlewares\authMiddleware.ts
+
 import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
 
 interface AuthRequest extends Request {
   user?: { userId: string };
 }
 
-const authMiddleware = (req: AuthRequest, res: Response,next: NextFunction): void => {
-  const token = req.cookies?.accessToken;
-  if (!token) {
-    res.status(401).json({ success: false, message: "Unauthorized: No token provided" }); 
-    return;}
-
-  try {
-    const decoded = jwt.verify(token,process.env.ACCESS_TOKEN_SECRET as string) as { userId: string };
-    req.user = { userId: decoded.userId };
-    next();
-  } catch (error) {
-    res.status(403).json({ success: false, message: "Forbidden: Invalid token" });
+export default function authMiddleware(req: AuthRequest, res: Response, next: NextFunction): void {
+  const userId = req.headers["x-user-id"] as string; // Example: Expect user ID in header
+  if (!userId) {
+    res.status(401).json({ success: false, message: "Unauthorized: No user ID provided" });
     return;
   }
-};
 
-export default authMiddleware;
+  req.user = { userId };
+  next();
+}

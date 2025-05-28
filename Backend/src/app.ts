@@ -1,9 +1,9 @@
+// C:\Users\vivek_laxvnt1\Desktop\PDF-SnipTool\Backend\src\app.ts
 import express from "express";
 import cors from "cors";
-import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import connectDB from "./database/connectDb";
-import userRouter from "./routes/UserRoutes";
+import userRouter from "./routes/userRoutes";
 
 dotenv.config();
 connectDB();
@@ -21,7 +21,6 @@ app.use(
 
 
 app.use(express.json());
-app.use(cookieParser());
 
 app.use("/", userRouter);
 
