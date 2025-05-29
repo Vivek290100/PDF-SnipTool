@@ -1,22 +1,23 @@
 // C:\Users\vivek_laxvnt1\Desktop\PDF-SnipTool\Backend\src\repositories\UserRepository.ts
 
-import { IUser } from "../interfaces/IUser";
+import { IUserRepository } from "../interfaces/IUserRepository";
 import User from "../models/userModel";
-import BaseRepository from "./baseRepository";
-import { FilterQuery } from "mongoose";
+import { IUser } from "../types/IUser";
 
-class UserRepository extends BaseRepository<IUser> {
-  constructor() {
-    super(User);
+export class UserRepository implements IUserRepository {
+  async create(user: Partial<IUser>): Promise<IUser> {
+    return await User.create(user);
   }
 
   async findByEmail(email: string): Promise<IUser | null> {
-    return await this.findByQuery({ email });
+    return await User.findOne({ email }).exec();
   }
 
   async findByUsername(userName: string): Promise<IUser | null> {
-    return await this.findByQuery({ userName });
+    return await User.findOne({ userName }).exec();
+  }
+
+  async findById(id: string): Promise<IUser | null> {
+    return await User.findById(id).exec();
   }
 }
-
-export default UserRepository;

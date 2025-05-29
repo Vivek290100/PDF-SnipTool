@@ -1,11 +1,12 @@
 // C:\Users\vivek_laxvnt1\Desktop\PDF-SnipTool\Backend\src\services\UserService.ts
-import { IUser } from "../interfaces/IUser";
+import { IUserService } from "../interfaces/IUserService";
+import { IUserRepository } from "../interfaces/IUserRepository";
+import { IUser } from "../types/IUser";
 import bcrypt from "bcrypt";
-import UserRepository from "../repositories/userRepository";
 import { ValidationError, NotFoundError, AuthenticationError } from "../utils/errors";
 
-class UserService {
-  constructor(private userRepository: UserRepository) {}
+export class UserService implements IUserService {
+  constructor(private userRepository: IUserRepository) {}
 
   private validateEmail(email: string): boolean {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -39,7 +40,7 @@ class UserService {
     return { email: data.email };
   }
 
-  async loginUser(email: string, password: string): Promise<{ user: IUser }> {
+  async loginUser(email: string, password: string): Promise<{ user: { userId: string; email: string; userName: string } }> {
     if (!this.validateEmail(email)) {
       throw new ValidationError("Invalid email format");
     }
@@ -54,7 +55,13 @@ class UserService {
       throw new AuthenticationError("Invalid password");
     }
 
-    return { user };
+    return {
+      user: {
+        userId: user._id.toString(),
+        email: user.email,
+        userName: user.userName,
+      },
+    };
   }
 
   async logout(userId: string): Promise<void> {
@@ -62,8 +69,6 @@ class UserService {
     if (!user) {
       throw new NotFoundError("User not found");
     }
-    // No-op for stateless system
+    // Implement logout logic, e.g., invalidate tokens or sessions
   }
 }
-
-export default UserService;

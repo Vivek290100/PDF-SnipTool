@@ -1,6 +1,6 @@
 // C:\Users\vivek_laxvnt1\Desktop\PDF-SnipTool\Backend\src\models\UserModel.ts
 import { Schema, model } from "mongoose";
-import { IUser } from "../interfaces/IUser";
+import { IUser } from "../types/IUser";
 
 const userSchema = new Schema<IUser>({
   userName: { type: String, required: true, unique: true },

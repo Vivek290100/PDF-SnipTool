@@ -7,9 +7,11 @@ interface AuthRequest extends Request {
 }
 
 export default function authMiddleware(req: AuthRequest, res: Response, next: NextFunction): void {
-  const userId = req.headers["x-user-id"] as string; // Example: Expect user ID in header
+  const userId = req.body.userId;
+  console.log("midddllellelelle", userId);
+  
   if (!userId) {
-    res.status(401).json({ success: false, message: "Unauthorized: No user ID provided" });
+    res.status(401).json({ success: false, message: "not getting userId in middleware" });
     return;
   }
 

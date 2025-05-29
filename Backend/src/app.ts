@@ -4,11 +4,13 @@ import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./database/connectDb";
 import userRouter from "./routes/userRoutes";
+import morgan from "morgan";
 
 dotenv.config();
 connectDB();
 
 const app = express();
+app.use(morgan("dev"));
 
 app.use(
   cors({

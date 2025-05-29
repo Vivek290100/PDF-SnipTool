@@ -1,24 +1,19 @@
 // C:\Users\vivek_laxvnt1\Desktop\PDF-SnipTool\Backend\src\controllers\UserController.ts
 import { Request, Response } from "express";
-import UserService from "../services/userService";
+import { IUserService } from "../interfaces/IUserService";
 
 interface AuthRequest extends Request {
   user?: { userId: string };
 }
 
-class UserController {
-  constructor(private _userService: UserService) {}
+export class UserController {
+  constructor(private userService: IUserService) {}
 
   async signUpUser(req: Request, res: Response): Promise<void> {
     try {
       const { email, password, userName } = req.body;
-      const result = await this._userService.initiateSignUp({
-        email,
-        password,
-        userName,
-      });
-
-      res.status(200).json({
+      const result = await this.userService.initiateSignUp({ email, password, userName });
+      res.status(201).json({
         success: true,
         message: "User registered successfully",
         email: result.email,
@@ -34,19 +29,11 @@ class UserController {
   async loginUser(req: Request, res: Response): Promise<void> {
     try {
       const { email, password } = req.body;
-      const { user } = await this._userService.loginUser(email, password);
-
-      const filteredUser = {
-        id: user._id,
-        userName: user.userName,
-        email: user.email,
-        joinedDate: user.joinedDate,
-      };
-
+      const { user } = await this.userService.loginUser(email, password);
       res.status(200).json({
         success: true,
         message: "User logged in successfully",
-        user: filteredUser,
+        user,
       });
     } catch (error: any) {
       res.status(400).json({
@@ -59,16 +46,14 @@ class UserController {
   async logout(req: AuthRequest, res: Response): Promise<void> {
     try {
       const userId = req.user?.userId;
-
       if (!userId) throw new Error("Unauthorized: No user ID found");
-
-      await this._userService.logout(userId);
-
+      await this.userService.logout(userId);
       res.status(200).json({ success: true, message: "Logged out successfully" });
     } catch (error: any) {
-      res.status(400).json({ success: false, message: error.message });
+      res.status(400).json({
+        success: false,
+        message: error.message,
+      });
     }
   }
 }
-
-export default UserController;

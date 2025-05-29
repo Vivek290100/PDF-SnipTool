@@ -1,4 +1,4 @@
-// C:\Users\vivek_laxvnt1\Desktop\PDF-SnipTool\Backend\src\interfaces\IUser.ts
+// C:\Users\vivek_laxvnt1\Desktop\PDF-SnipTool\Backend\src\types\IUser.ts
 
 import { Document as MongooseDocument } from "mongoose";
 
