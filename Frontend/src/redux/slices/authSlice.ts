@@ -1,8 +1,7 @@
 // C:\Users\vivek_laxvnt1\Desktop\PDF-SnipTool\Frontend\src\redux\slices\authSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { signUp, login, logout } from "../thunks/authThunks";
-import { AuthResponse, User } from "@/types/IUser";
-
+import { AuthResponse, User } from "@/types/userType";
 
 interface AuthState {
   isAuthenticated: boolean;
@@ -42,8 +41,10 @@ const authSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(signUp.fulfilled, (state, action: PayloadAction<AuthResponse>) => {
-        updateAuthState(state, action.payload);
+      .addCase(signUp.fulfilled, (state) => {
+        state.loading = false;
+        state.error = null;
+        // No user data stored
       })
       .addCase(login.fulfilled, (state, action: PayloadAction<AuthResponse>) => {
         updateAuthState(state, action.payload);
@@ -73,7 +74,7 @@ const authSlice = createSlice({
 const updateAuthState = (state: AuthState, payload: AuthResponse) => {
   const { user } = payload;
   state.isAuthenticated = true;
-  state.user = { ...user };
+  state.user = { ...user }; // Only userId, email, userName
   state.loading = false;
   state.error = null;
 };

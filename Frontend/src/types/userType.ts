@@ -1,8 +1,8 @@
+// C:\Users\vivek_laxvnt1\Desktop\PDF-SnipTool\Frontend\src\types\userType.ts
 export interface User {
-  id: string;
+  userId: string;
   email: string;
   userName: string;
-  joinedDate: string;
 }
 
 export interface AuthResponse {

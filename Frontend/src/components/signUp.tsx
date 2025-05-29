@@ -1,3 +1,4 @@
+// Updated SignupPage.tsx - Redirect to home after signup
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,11 +11,13 @@ import { useAppDispatch } from "@/redux/store";
 import { signUp } from "@/redux/thunks/authThunks";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { useNavigate } from "react-router-dom";
 
 export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useAppDispatch();
   const { loading, error } = useSelector((state: RootState) => state.auth);
+  const navigate = useNavigate();
 
   const {
     register,
@@ -25,13 +28,14 @@ export default function SignupPage() {
   });
 
   const handleSignup = async (data: SignUpFormData) => {
-    console.log("ppppppppppppppppppppppppp");
-    
-    await dispatch(signUp(data));
+    const response = await dispatch(signUp(data));
+    if (signUp.fulfilled.match(response)) {
+      navigate("/login");
+    }
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-background text-white px-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-background text-white px-4 pt-16">
       <Card className="w-full max-w-md bg-card text-card-foreground rounded-lg shadow-xl p-6">
         <CardHeader>
           <CardTitle className="text-xl font-bold">Hi there!</CardTitle>

@@ -1,3 +1,4 @@
+// Updated LoginPage.tsx - Redirect to home after login
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,11 +11,13 @@ import { useAppDispatch } from "@/redux/store";
 import { login } from "@/redux/thunks/authThunks";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useAppDispatch();
   const { loading, error } = useSelector((state: RootState) => state.auth);
+  const navigate = useNavigate();
 
   const {
     register,
@@ -25,11 +28,14 @@ export default function LoginPage() {
   });
 
   const handleLogin = async (data: LoginFormData) => {
-    await dispatch(login(data));
+    const response = await dispatch(login(data));
+    if (login.fulfilled.match(response)) {
+      navigate("/"); // Redirect to home instead of dashboard
+    }
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-background text-white px-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-background text-white px-4 pt-16">
       <Card className="w-full max-w-md bg-card text-card-foreground rounded-lg shadow-xl p-6">
         <CardHeader>
           <CardTitle className="text-xl font-bold">Welcome Back!</CardTitle>

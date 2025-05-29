@@ -3,25 +3,25 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "@/utils/axiosInstance";
 import { isAxiosError } from "axios";
 import { LoginFormData, SignUpFormData } from "@/utils/authValidation";
-import { AuthResponse } from "@/types/IUser";
+import { AuthResponse } from "@/types/userType";
+import { SignUpResponse } from "@/types/authTypes";
 
-export const signUp = createAsyncThunk<AuthResponse, SignUpFormData, { rejectValue: string }>(
+export const signUp = createAsyncThunk<void, SignUpFormData, { rejectValue: string }>(
   "auth/signUp",
   async (userData, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post("/signup", userData);
-      const { email } = response.data;
-      return {
-        user: {
-          id: "", // No ID returned from signup
-          email,
-          userName: userData.userName,
-          joinedDate: new Date().toISOString(),
-        },
-      };
+      const result: SignUpResponse = response.data;
+      if (!result.success) {
+        return rejectWithValue(result.error || result.message || "Signup failed");
+      }
+      return;
     } catch (error) {
       if (isAxiosError(error)) {
-        return rejectWithValue(error.response?.data?.message || "Signup failed");
+        const errorData = error.response?.data as SignUpResponse | undefined;
+        return rejectWithValue(
+          errorData?.error || errorData?.message || error.response?.data?.message || "Signup failed"
+        );
       }
       return rejectWithValue("Unexpected error occurred");
     }
@@ -33,13 +33,14 @@ export const login = createAsyncThunk<AuthResponse, LoginFormData, { rejectValue
   async (userData, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post("/login", userData);
+      console.log("ttttttttttttttttttttttt",response);
+      
       const { user } = response.data;
       return {
         user: {
-          id: user.id,
+          userId: user.userId,
           email: user.email,
           userName: user.userName,
-          joinedDate: user.joinedDate,
         },
       };
     } catch (error) {
@@ -55,12 +56,14 @@ export const logout = createAsyncThunk<void, void, { rejectValue: string }>(
   "auth/logout",
   async (_, { rejectWithValue, getState }) => {
     try {
-      const state = getState() as { auth: { user: { id: string } | null } };
-      const userId = state.auth.user?.id;
+      const state = getState() as { auth: { user: { userId: string } | null } };
+      console.log("ppppppppppp",state.auth.user);
+      
+      const userId = state.auth.user?.userId;
       if (!userId) {
         return rejectWithValue("No user ID found");
       }
-      await axiosInstance.post("/logout", {}, { headers: { "x-user-id": userId } });
+      await axiosInstance.post("/logout", {userId},);
     } catch (error) {
       if (isAxiosError(error)) {
         return rejectWithValue(error.response?.data?.message || "Logout failed");
@@ -69,4 +72,3 @@ export const logout = createAsyncThunk<void, void, { rejectValue: string }>(
     }
   }
 );
-

@@ -1,5 +1,5 @@
-import Navbar from "@/components/navbar"
 import HeroSection from "@/components/home"
+import Navbar from "@/components/navbar"
 const HomePage = () => {
   return (
     <div className="w-full overflow-hidden">
