@@ -1,15 +1,18 @@
 // HeroSection.tsx - Updated to make homepage public
 import { Button } from "@/components/ui/button";
 import { Upload } from "lucide-react";
-import { useRef } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
+import { useRef, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState, AppDispatch } from "@/redux/store";
 import { useNavigate } from "react-router-dom";
+import axiosInstance from "@/utils/axiosInstance";
 
 export default function HeroSection() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const [selectedPdfId, setSelectedPdfId] = useState<string | null>(null);
 
   const handleButtonClick = () => {
     if (!isAuthenticated) {
@@ -19,13 +22,27 @@ export default function HeroSection() {
     fileInputRef.current?.click();
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file && file.type === "application/pdf") {
-      console.log("Selected PDF:", file.name);
-      // TODO: Implement file upload logic (e.g., dispatch to Redux or API call)
+      const formData = new FormData();
+      formData.append("pdf", file);
+      try {
+        const response = await axiosInstance.post("/pdf/upload", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        setSelectedPdfId(response.data.pdf._id);
+      } catch (error) {
+        alert("Failed to upload PDF. Please try again.");
+      }
     } else {
       alert("Please select a valid PDF file.");
+    }
+  };
+
+  const handleProceed = () => {
+    if (selectedPdfId) {
+      navigate(`/pdf-pages/${selectedPdfId}`);
     }
   };
 
@@ -58,6 +75,15 @@ export default function HeroSection() {
             onChange={handleFileChange}
             aria-hidden="true"
           />
+        )}
+        {selectedPdfId && (
+          <Button
+            size="lg"
+            className="bg-secondary text-secondary-foreground rounded-full shadow-2xl hover:scale-105 transition-transform duration-340"
+            onClick={handleProceed}
+          >
+            Proceed
+          </Button>
         )}
         <p className="text-sm text-muted-foreground">
           {isAuthenticated 

@@ -8,6 +8,7 @@ import Navbar from "@/components/navbar";
 const Signup = lazy(() => import("./pages/signUpPage"));
 const Login = lazy(() => import("./pages/loginPage"));
 const Home = lazy(() => import("./pages/homePage"));
+const PdfPagesPage = lazy(() => import("./pages/pdfPagesPage"));
 
 
 const App = () => {
@@ -30,6 +31,8 @@ const App = () => {
           
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/pdf-pages/:pdfId" element={<PdfPagesPage />} />
+
         
         </Routes>
       </Suspense>

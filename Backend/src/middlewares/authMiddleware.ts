@@ -7,7 +7,7 @@ interface AuthRequest extends Request {
 }
 
 export default function authMiddleware(req: AuthRequest, res: Response, next: NextFunction): void {
-  const userId = req.body.userId;
+  const userId = req.body;
   console.log("midddllellelelle", userId);
   
   if (!userId) {
