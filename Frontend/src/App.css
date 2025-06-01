@@ -1,35 +1,13 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+.pdf-viewer {
+    position: relative;
 }
 
-@keyframes glowX {
-  0% {
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 10px rgba(0, 119, 255, 0.6);
-  }
-  50% {
-    text-shadow: 0 0 10px rgba(255, 255, 255, 1), 0 0 20px rgba(0, 119, 255, 0.8);
-  }
-  100% {
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 10px rgba(0, 119, 255, 0.6);
-  }
+.page {
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
 
-@keyframes logoGlow {
-  0%, 100% {
-    filter: drop-shadow(0 0 5px rgba(0, 119, 255, 0.8));
-  }
-  50% {
-    filter: drop-shadow(0 0 15px rgba(0, 119, 255, 1));
-  }
-}
-
-.animate-glowX {
-  animation: glowX 1.5s infinite alternate;
-}
-
-.drop-shadow-glow {
-  animation: logoGlow 2s infinite alternate;
+.page.selected {
+    background-color: rgba(0, 0, 255, 0.1);
+    /* Highlight selected page */
 }
