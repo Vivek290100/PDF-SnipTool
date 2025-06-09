@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { commonRequest } from "../../utlis/commonRequest";
 import { useNavigate } from "react-router-dom";
+import { validateEmail, validatePassword, validateUsername } from "../../utlis/validation";
 
 const UserSignUpPage = () => {
   const [email, setEmail] = useState("");
@@ -10,21 +11,6 @@ const UserSignUpPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
-
-  const validateEmail = (email) => {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
-  };
-
-  const validateUsername = (username) => {
-    const regex = /^[a-zA-Z0-9_]{3,}$/;
-    return regex.test(username);
-  };
-
-  const validatePassword = (password) => {
-    const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
-    return regex.test(password);
-  };
 
   const handleSignUp = async (e) => {
     e.preventDefault();

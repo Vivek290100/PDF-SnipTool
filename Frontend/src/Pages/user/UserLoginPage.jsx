@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Spinner } from "@nextui-org/react";
 import { commonRequest } from "../../utlis/commonRequest";
+import { validateEmail, validatePassword } from "../../utlis/validation";
 
 const UserLogin = () => {
   const [email, setEmail] = useState("");
@@ -9,15 +10,6 @@ const UserLogin = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
-
-  const validateEmail = (email) => {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
-  };
-
-  const validatePassword = (password) => {
-    return password.length >= 6;
-  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -101,7 +93,9 @@ const UserLogin = () => {
               <Spinner label="Loading..." color="warning" />
             </div>
           )}
-          {error && <div className="text-red-400 text-sm text-center">{error}</div>}
+          {error && (
+            <div className="text-red-400 text-sm text-center">{error}</div>
+          )}
           <div>
             <button
               type="submit"
@@ -112,8 +106,8 @@ const UserLogin = () => {
             </button>
           </div>
         </form>
-         <p className="text-center mt-6 text-gray-600">
-          Already have an account?{" "}
+        <p className="text-center mt-6 text-gray-600">
+          Don't have an account?{" "}
           <a href="/signup" className="text-blue-500 hover:text-blue-600">
             Sign Up
           </a>

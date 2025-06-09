@@ -1,6 +1,7 @@
 const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
-const Pdf = require('../models/pdfModal')
+const Pdf = require('../models/pdfModal');
+const statusCodes = require('../utils/statusCodes');
 
 const generateToken = (user) => {
     return jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
@@ -13,38 +14,31 @@ exports.signup = async (req, res) => {
 
     try {
         const user = await User.create({ email, username, password });
-        console.log("rrrrrrrrr",user);
-        
-
         const token = generateToken(user);
 
         res.cookie('token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'strict',
-            maxAge: 3600000
+            maxAge: 3600000,
         });
 
-        res.status(201).json({ message: 'Signup Successfuly' });
+        res.status(statusCodes.CREATED).json({ message: 'Signup Successfully' });
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        res.status(statusCodes.BAD_REQUEST).json({ message: error.message });
     }
 };
 
 exports.login = async (req, res) => {
     const { email, password } = req.body;
 
-    console.log(email, password, "reached backedn");
-
 
     try {
         const user = await User.findOne({ email });
-        console.log("eeeeeeeeee",user);
-        
-        if (!user || !(await user.matchPassword(password))) {
-            return res.status(400).json({ message: 'Invalid email or password' });
-        }
 
+        if (!user || !(await user.matchPassword(password))) {
+            return res.status(statusCodes.BAD_REQUEST).json({ message: 'Invalid email or password' });
+        }
 
         const token = generateToken(user);
 
@@ -52,22 +46,20 @@ exports.login = async (req, res) => {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'strict',
-            maxAge: 3600000
+            maxAge: 3600000,
         });
 
-        res.json({ message: 'Login successful' });
+        res.status(statusCodes.OK).json({ message: 'Login successful' });
 
     } catch (error) {
-        res.status(500).json({ message: 'Server error' });
+        res.status(statusCodes.SERVER_ERROR).json({ message: 'Server error' });
     }
 };
-
-
 
 exports.uploadPdf = async (req, res) => {
     try {
         if (!req.file) {
-            return res.status(400).json({ message: 'No file uploaded' });
+            return res.status(statusCodes.BAD_REQUEST).json({ message: 'No file uploaded' });
         }
 
         console.log("File upload route hit.");
@@ -78,28 +70,23 @@ exports.uploadPdf = async (req, res) => {
         });
 
         await newPdf.save();
-        res.status(201).json({ message: "File uploaded successfully!", pdf: newPdf });
+        res.status(statusCodes.CREATED).json({ message: "File uploaded successfully!", pdf: newPdf });
     } catch (error) {
         console.error('Error during file upload:', error);
-        res.status(500).json({ message: 'Failed to upload file' });
+        res.status(statusCodes.SERVER_ERROR).json({ message: 'Failed to upload file' });
     }
 };
 
-
 exports.getUserPdfs = async (req, res) => {
     try {
-        console.log(req.user._id,"user id here inside getpdf");
-        
+        console.log(req.user._id, "user id here inside getpdf");
+
         const pdfs = await Pdf.find({ userId: req.user._id });
-        res.status(200).json(pdfs);
+        res.status(statusCodes.OK).json(pdfs);
     } catch (error) {
-        res.status(500).json({ message: "Failed to fetch PDFs" });
+        res.status(statusCodes.SERVER_ERROR).json({ message: "Failed to fetch PDFs" });
     }
 }
-
-
-
-
 
 exports.logout = async (req, res) => {
     res.clearCookie('token', {
@@ -107,5 +94,5 @@ exports.logout = async (req, res) => {
         sameSite: 'Lax',
         secure: process.env.NODE_ENV === 'production',
     });
-    return res.status(200).json({ message: 'Logged Out Successfully' })
+    return res.status(statusCodes.OK).json({ message: 'Logged Out Successfully' })
 }

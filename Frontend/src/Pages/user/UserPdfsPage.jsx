@@ -20,7 +20,6 @@ import {
   Grid2,
 } from "@mui/material";
 import { EditIcon } from "../../components/EditIcon";
-import { DeleteIcon } from "../../components/DeleteIcon";
 import { EyeIcon } from "../../components/EyeIcon";
 import { URL } from "../../utlis/constants";
 import { commonRequest } from "../../utlis/commonRequest";
@@ -275,14 +274,14 @@ const UserPdfsPage = () => {
                           <EditIcon />
                         </div>
                       </Tooltip>
-                      <Tooltip content="Delete PDF">
+                      {/* <Tooltip content="Delete PDF">
                         <div
                           className="text-black-300 hover:text-red-400 cursor-pointer"
                           onClick={() => handleDelete(item)}
                         >
                           <DeleteIcon />
                         </div>
-                      </Tooltip>
+                      </Tooltip> */}
                     </Box>
                   </TableCell>
                 </TableRow>
